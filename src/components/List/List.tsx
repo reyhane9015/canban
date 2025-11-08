@@ -12,7 +12,7 @@ import styles from "./List.module.css";
 
 type Props = {
   list: ListType;
-  onClick?: () => void;
+  onClick?: (id: string) => void;
 };
 
 const List = memo(function List({ list, onClick }: Props): ReactNode {

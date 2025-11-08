@@ -1,54 +1,52 @@
 import { type ReactNode, useCallback, useState } from "react";
 
+import { listsData } from "@/data/list-data";
+
 import IconButton from "@/components/IconButton/IconButton.tsx";
 
 import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";
 
 import type { ListType } from "@/types/list";
+import type { ListItemType } from "@/types/list-item";
 
 import List from "../List/List";
 
 import styles from "./Board.module.css";
 
 export default function Board(): ReactNode {
-  const [todoList, setTodoList] = useState<ListType>({
-    id: "1",
-    title: "🔜 To Do",
-    items: [
-      { id: "1", title: "Setup Backend Project" },
-      { id: "2", title: "Find a Good Name" },
-      { id: "3", title: "Implement Landing Page" },
-    ],
-  });
-
-  const [doingList] = useState<ListType>({
-    id: "2",
-    title: "🔨 Doing",
-    items: [
-      { id: "4", title: "Setup Frontend Project" },
-      { id: "5", title: "Design Landing Page" },
-    ],
-  });
-  const [doneList] = useState<ListType>({
-    id: "3",
-    title: "🎉 Done",
-    items: [],
-  });
-
-  const handleEditButtonClick = (): void => {
-    setTodoList((old) => {
-      const clone = [...old.items];
-      clone.splice(1, 1);
-      return { ...old, items: clone };
-    });
-  };
+  const [lists, setLists] = useState<ListType[]>(listsData);
 
   const handleListItemClick = useCallback((id: string): void => {
-    setTodoList((old) => {
-      const clone = [...old.items];
-      const newItems = clone.filter((item) => item.id !== id);
-      return { ...old, items: newItems };
+    setLists((old) => {
+      // ************ 2 solution for handle delete *************** //
+
+      //  solution 1)) *************
+      const clone = [...old];
+
+      const newItems = clone[0].items.filter(
+        (item: ListItemType) => item.id !== id,
+      );
+
+      const newList = { ...clone[0], items: newItems };
+
+      // 3 solution for return result **********
+      // 1))))))
+      // clone[0] = newList;
+      // return clone;
+      // .....................
+      // 2))))))))))
+      return [newList, ...old];
+      // .....................
+      // 3))))))))))
+      // return [newList, old[1], old[2]];
+
+      //  solution 2)) *************
+      // const clone = {
+      //   ...old[0],
+      //   items: old[0].items.filter((item) => item.id !== id),
+      // };
+      // return [clone, old[1], old[2]];
     });
   }, []);
 
@@ -57,7 +55,7 @@ export default function Board(): ReactNode {
       <div className={styles.toolbar}>
         <div className={styles.title}>Board Title</div>
         <div className={styles.actions}>
-          <IconButton onClick={handleEditButtonClick}>
+          <IconButton>
             <MingcuteEdit2Line />
           </IconButton>
           <IconButton>
@@ -67,14 +65,10 @@ export default function Board(): ReactNode {
       </div>
       <ul className={styles.lists}>
         <li>
-          <List list={todoList} onClick={handleListItemClick} />
+          <List list={lists[0]} onClick={handleListItemClick} />
         </li>
-        <li>
-          <List list={doingList} />
-        </li>
-        <li>
-          <List list={doneList} />
-        </li>
+        <li>{/* <List list={lists[1]} onClick={handleListItemClick} /> */}</li>
+        <li>{/* <List list={lists[2]} onClick={handleListItemClick} /> */}</li>
       </ul>
     </div>
   );
