@@ -73,17 +73,7 @@ export default function Board(): ReactNode {
                 <MingcuteMore1Line />
               </IconButton>
             </div>
-            <ul className={styles.items}>
-              <li>
-                <div className={styles.item}>Done 1</div>
-              </li>
-              <li>
-                <div className={styles.item}>Done 2</div>
-              </li>
-              <li>
-                <div className={styles.item}>Done 2</div>
-              </li>
-            </ul>
+            <ul className={styles.items}></ul>
           </div>
         </li>
       </ul>
