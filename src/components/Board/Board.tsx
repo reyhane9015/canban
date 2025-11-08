@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
 
 import IconButton from "@/components/IconButton/IconButton.tsx";
 
@@ -6,7 +6,6 @@ import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";
 
 import type { ListType } from "@/types/list";
-import type { ListItemType } from "@/types/list-item";
 
 import List from "../List/List";
 
@@ -17,9 +16,9 @@ export default function Board(): ReactNode {
     id: "1",
     title: "🔜 To Do",
     items: [
-      { id: "1", title: "0: Setup Backend Project" },
-      { id: "2", title: "1: Find a Good Name" },
-      { id: "3", title: "2: Implement Landing Page" },
+      { id: "1", title: "Setup Backend Project" },
+      { id: "2", title: "Find a Good Name" },
+      { id: "3", title: "Implement Landing Page" },
     ],
   });
 
@@ -41,10 +40,17 @@ export default function Board(): ReactNode {
     setTodoList((old) => {
       const clone = [...old.items];
       clone.splice(1, 1);
-
       return { ...old, items: clone };
     });
   };
+
+  const handleListItemClick = useCallback((id: string): void => {
+    setTodoList((old) => {
+      const clone = [...old.items];
+      const newItems = clone.filter((item) => item.id !== id);
+      return { ...old, items: newItems };
+    });
+  }, []);
 
   return (
     <div className={styles.board}>
@@ -61,7 +67,7 @@ export default function Board(): ReactNode {
       </div>
       <ul className={styles.lists}>
         <li>
-          <List list={todoList} />
+          <List list={todoList} onClick={handleListItemClick} />
         </li>
         <li>
           <List list={doingList} />
