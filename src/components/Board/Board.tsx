@@ -6,19 +6,20 @@ import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";
 
 import type { ListType } from "@/types/list";
+import type { ListItemType } from "@/types/list-item";
 
 import List from "../List/List";
 
 import styles from "./Board.module.css";
 
 export default function Board(): ReactNode {
-  const [todoList] = useState<ListType>({
+  const [todoList, setTodoList] = useState<ListType>({
     id: "1",
     title: "🔜 To Do",
     items: [
-      { id: "1", title: "Setup Backend Project" },
-      { id: "2", title: "Find a Good Name for the Project" },
-      { id: "3", title: "Implement Landing Page" },
+      { id: "1", title: "0: Setup Backend Project" },
+      { id: "2", title: "1: Find a Good Name" },
+      { id: "3", title: "2: Implement Landing Page" },
     ],
   });
 
@@ -36,12 +37,21 @@ export default function Board(): ReactNode {
     items: [],
   });
 
+  const handleEditButtonClick = (): void => {
+    setTodoList((old) => {
+      const clone = [...old.items];
+      clone.splice(1, 1);
+
+      return { ...old, items: clone };
+    });
+  };
+
   return (
     <div className={styles.board}>
       <div className={styles.toolbar}>
         <div className={styles.title}>Board Title</div>
         <div className={styles.actions}>
-          <IconButton>
+          <IconButton onClick={handleEditButtonClick}>
             <MingcuteEdit2Line />
           </IconButton>
           <IconButton>
