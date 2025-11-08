@@ -1,14 +1,41 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import IconButton from "@/components/IconButton/IconButton.tsx";
 
 import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";
-import MingcuteMore1Line from "@/icons/MingcuteMore1Line";
+
+import type { ListType } from "@/types/list";
+
+import List from "../List/List";
 
 import styles from "./Board.module.css";
 
 export default function Board(): ReactNode {
+  const [todoList] = useState<ListType>({
+    id: "1",
+    title: "🔜 To Do",
+    items: [
+      { id: "1", title: "Setup Backend Project" },
+      { id: "2", title: "Find a Good Name for the Project" },
+      { id: "3", title: "Implement Landing Page" },
+    ],
+  });
+
+  const [doingList] = useState<ListType>({
+    id: "2",
+    title: "🔨 Doing",
+    items: [
+      { id: "4", title: "Setup Frontend Project" },
+      { id: "5", title: "Design Landing Page" },
+    ],
+  });
+  const [doneList] = useState<ListType>({
+    id: "3",
+    title: "🎉 Done",
+    items: [],
+  });
+
   return (
     <div className={styles.board}>
       <div className={styles.toolbar}>
@@ -24,57 +51,13 @@ export default function Board(): ReactNode {
       </div>
       <ul className={styles.lists}>
         <li>
-          <div className={styles.list}>
-            <div className={styles.header}>
-              <div className={styles.title}>To Do</div>
-              <IconButton>
-                <MingcuteMore1Line />
-              </IconButton>
-            </div>
-            <ul className={styles.items}>
-              <li>
-                <div className={styles.item}>to Do 1</div>
-              </li>
-              <li>
-                <div className={styles.item}>to Do 2</div>
-              </li>
-              <li>
-                <div className={styles.item}>to Do 2</div>
-              </li>
-            </ul>
-          </div>
+          <List list={todoList} />
         </li>
         <li>
-          <div className={styles.list}>
-            <div className={styles.header}>
-              <div className={styles.title}>Doing</div>
-              <IconButton>
-                <MingcuteMore1Line />
-              </IconButton>
-            </div>
-            <ul className={styles.items}>
-              <li>
-                <div className={styles.item}>Doing 1</div>
-              </li>
-              <li>
-                <div className={styles.item}>Doing 2</div>
-              </li>
-              <li>
-                <div className={styles.item}>Doing 2</div>
-              </li>
-            </ul>
-          </div>
+          <List list={doingList} />
         </li>
         <li>
-          <div className={styles.list}>
-            <div className={styles.header}>
-              <div className={styles.title}>Done</div>
-              <IconButton>
-                <MingcuteMore1Line />
-              </IconButton>
-            </div>
-            <ul className={styles.items}></ul>
-          </div>
+          <List list={doneList} />
         </li>
       </ul>
     </div>
