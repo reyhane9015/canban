@@ -1,42 +1,23 @@
-import { type ReactNode, useEffect, useState } from "react";
-
-import { listsData } from "@/data/list-data";
+import { type ReactNode, useContext, useEffect, useState } from "react";
 
 import IconButton from "@/components/IconButton/IconButton.tsx";
 
+import { BoardContext } from "@/context/board-countext";
+
 import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";
-
-import type { ListType } from "@/types/list";
 
 import Button from "../Button/Button";
 import List from "../List/List";
 
 import styles from "./Board.module.css";
 
-function save(lists: ListType[]): void {
-  localStorage.setItem("lists", JSON.stringify(lists));
-}
-
-function load(): ListType[] {
-  const item = localStorage.getItem("lists");
-  if (!item) {
-    return listsData;
-  }
-
-  return JSON.parse(item);
-}
-
 export default function Board(): ReactNode {
-  const [lists, setLists] = useState<ListType[]>(load);
+  const { lists, create, move, remove } = useContext(BoardContext);
 
   const [activeListId, setActiveListId] = useState<string | null>(null);
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
-
-  useEffect(() => {
-    save(lists);
-  }, [lists]);
 
   useEffect(() => {
     const handleDocumentKeyDown = (e: KeyboardEvent): void => {
@@ -92,103 +73,23 @@ export default function Board(): ReactNode {
     setActiveListId(listId);
   };
 
-  const handleListItemRemove = (listId: string, itemId: string): void => {
-    setLists((old) => {
-      try {
-        const activeListIndex = old.findIndex((list) => list.id === listId);
-
-        if (activeListIndex === -1) {
-          console.error("can not find the list.");
-          return old;
-        }
-
-        const clone = [...old];
-        const activeList = {
-          ...clone[activeListIndex],
-          items: [...clone[activeListIndex].items],
-        };
-
-        const activeItemIndex = activeList.items.findIndex(
-          (item) => item.id === itemId,
-        );
-
-        if (activeItemIndex === -1) {
-          console.error("can not find the item.");
-          return old;
-        }
-
-        activeList.items.splice(activeItemIndex, 1);
-
-        clone[activeListIndex] = activeList;
-
-        return clone;
-      } finally {
-        setActiveItemId(null);
-        setActiveListId(null);
-      }
-    });
-  };
-
-  const handleMoveButtonClick = (destinationListId: string): void => {
-    setLists((old) => {
-      try {
-        const activeListIndex = old.findIndex(
-          (list) => list.id === activeListId,
-        );
-
-        const destinationListIndex = old.findIndex(
-          (list) => list.id === destinationListId,
-        );
-
-        if (activeListIndex === -1 || destinationListIndex === -1) {
-          console.error("can not find the list.");
-          return old;
-        }
-
-        const clone = [...old];
-        const activeList = {
-          ...clone[activeListIndex],
-          items: [...clone[activeListIndex].items],
-        };
-        const destinationList = {
-          ...clone[destinationListIndex],
-          items: [...clone[destinationListIndex].items],
-        };
-
-        const activeItemIndex = activeList.items.findIndex(
-          (item) => item.id === activeItemId,
-        );
-
-        if (activeItemIndex === -1) {
-          console.error("can not find the item.");
-          return old;
-        }
-
-        const [activeItem] = activeList.items.splice(activeItemIndex, 1);
-
-        destinationList.items.push(activeItem);
-
-        clone[activeListIndex] = activeList;
-        clone[destinationListIndex] = destinationList;
-
-        return clone;
-      } finally {
-        setActiveItemId(null);
-        setActiveListId(null);
-      }
-    });
-  };
-
   const handleCreateButtonClick = (): void => {
-    setLists((old) => {
-      const clone = [...old];
-
-      const id = globalThis.crypto.randomUUID();
-      clone[0] = { ...clone[0], items: [...clone[0].items, { id, title: id }] };
-
-      return clone;
-    });
+    create();
   };
+
+  const handleMoveButtonClick = (toListId: string): void => {
+    if (activeListId && activeItemId) {
+      move(activeListId, activeItemId, toListId);
+    }
+    setActiveItemId(null);
+    setActiveListId(null);
+  };
+  const handleListItemRemove = (listId: string, itemId: string): void => {
+    remove(listId, itemId);
+    setActiveItemId(null);
+    setActiveListId(null);
+  };
+
   return (
     <div className={styles.board}>
       <div className={styles.toolbar}>
