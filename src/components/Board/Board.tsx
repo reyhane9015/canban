@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { listsData } from "@/data/list-data";
 
@@ -87,20 +87,15 @@ export default function Board(): ReactNode {
   //   });
   // }, []);
 
-  const handleListItemClick = useCallback(
-    (listId: string, itemId: string): void => {
-      setActiveItemId(itemId);
-      setActiveListId(listId);
-    },
-    [],
-  );
+  const handleListItemClick = (listId: string, itemId: string): void => {
+    setActiveItemId(itemId);
+    setActiveListId(listId);
+  };
 
-  const handleRemoveButtonClick = useCallback((): void => {
+  const handleListItemRemove = (listId: string, itemId: string): void => {
     setLists((old) => {
       try {
-        const activeListIndex = old.findIndex(
-          (list) => list.id === activeListId,
-        );
+        const activeListIndex = old.findIndex((list) => list.id === listId);
 
         if (activeListIndex === -1) {
           console.error("can not find the list.");
@@ -114,7 +109,7 @@ export default function Board(): ReactNode {
         };
 
         const activeItemIndex = activeList.items.findIndex(
-          (item) => item.id === activeItemId,
+          (item) => item.id === itemId,
         );
 
         if (activeItemIndex === -1) {
@@ -132,60 +127,57 @@ export default function Board(): ReactNode {
         setActiveListId(null);
       }
     });
-  }, [activeItemId, activeListId]);
+  };
 
-  const handleMoveButtonClick = useCallback(
-    (destinationListId: string): void => {
-      setLists((old) => {
-        try {
-          const activeListIndex = old.findIndex(
-            (list) => list.id === activeListId,
-          );
+  const handleMoveButtonClick = (destinationListId: string): void => {
+    setLists((old) => {
+      try {
+        const activeListIndex = old.findIndex(
+          (list) => list.id === activeListId,
+        );
 
-          const destinationListIndex = old.findIndex(
-            (list) => list.id === destinationListId,
-          );
+        const destinationListIndex = old.findIndex(
+          (list) => list.id === destinationListId,
+        );
 
-          if (activeListIndex === -1 || destinationListIndex === -1) {
-            console.error("can not find the list.");
-            return old;
-          }
-
-          const clone = [...old];
-          const activeList = {
-            ...clone[activeListIndex],
-            items: [...clone[activeListIndex].items],
-          };
-          const destinationList = {
-            ...clone[destinationListIndex],
-            items: [...clone[destinationListIndex].items],
-          };
-
-          const activeItemIndex = activeList.items.findIndex(
-            (item) => item.id === activeItemId,
-          );
-
-          if (activeItemIndex === -1) {
-            console.error("can not find the item.");
-            return old;
-          }
-
-          const [activeItem] = activeList.items.splice(activeItemIndex, 1);
-
-          destinationList.items.push(activeItem);
-
-          clone[activeListIndex] = activeList;
-          clone[destinationListIndex] = destinationList;
-
-          return clone;
-        } finally {
-          setActiveItemId(null);
-          setActiveListId(null);
+        if (activeListIndex === -1 || destinationListIndex === -1) {
+          console.error("can not find the list.");
+          return old;
         }
-      });
-    },
-    [activeItemId, activeListId],
-  );
+
+        const clone = [...old];
+        const activeList = {
+          ...clone[activeListIndex],
+          items: [...clone[activeListIndex].items],
+        };
+        const destinationList = {
+          ...clone[destinationListIndex],
+          items: [...clone[destinationListIndex].items],
+        };
+
+        const activeItemIndex = activeList.items.findIndex(
+          (item) => item.id === activeItemId,
+        );
+
+        if (activeItemIndex === -1) {
+          console.error("can not find the item.");
+          return old;
+        }
+
+        const [activeItem] = activeList.items.splice(activeItemIndex, 1);
+
+        destinationList.items.push(activeItem);
+
+        clone[activeListIndex] = activeList;
+        clone[destinationListIndex] = destinationList;
+
+        return clone;
+      } finally {
+        setActiveItemId(null);
+        setActiveListId(null);
+      }
+    });
+  };
 
   const handleCreateButtonClick = (): void => {
     setLists((old) => {
@@ -214,7 +206,7 @@ export default function Board(): ReactNode {
                     {list.title}
                   </Button>
                 ))}
-              <Button onClick={handleRemoveButtonClick}>Remove</Button>
+              {/* <Button onClick={handleListItemRemove}>Remove</Button> */}
             </div>
           )}
           <IconButton>
@@ -228,7 +220,11 @@ export default function Board(): ReactNode {
       <ul className={styles.lists}>
         {lists.map((list) => (
           <li key={list.id}>
-            <List list={list} onClick={handleListItemClick} />
+            <List
+              list={list}
+              onClick={handleListItemClick}
+              onRemove={handleListItemRemove}
+            />
           </li>
         ))}
       </ul>
