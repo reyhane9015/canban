@@ -62,7 +62,7 @@ export default function Board(): ReactNode {
     [],
   );
 
-  const handleRemoveButtonClick = (): void => {
+  const handleRemoveButtonClick = useCallback((): void => {
     setLists((old) => {
       try {
         const activeListIndex = old.findIndex(
@@ -99,57 +99,61 @@ export default function Board(): ReactNode {
         setActiveListId(null);
       }
     });
-  };
+  }, [activeItemId, activeListId]);
 
-  const handleMoveButtonClick = (destinationListId: string): void => {
-    setLists((old) => {
-      try {
-        const activeListIndex = old.findIndex(
-          (list) => list.id === activeListId,
-        );
+  const handleMoveButtonClick = useCallback(
+    (destinationListId: string): void => {
+      setLists((old) => {
+        try {
+          const activeListIndex = old.findIndex(
+            (list) => list.id === activeListId,
+          );
 
-        const destinationListIndex = old.findIndex(
-          (list) => list.id === destinationListId,
-        );
+          const destinationListIndex = old.findIndex(
+            (list) => list.id === destinationListId,
+          );
 
-        if (activeListIndex === -1 || destinationListIndex === -1) {
-          console.error("can not find the list.");
-          return old;
+          if (activeListIndex === -1 || destinationListIndex === -1) {
+            console.error("can not find the list.");
+            return old;
+          }
+
+          const clone = [...old];
+          const activeList = {
+            ...clone[activeListIndex],
+            items: [...clone[activeListIndex].items],
+          };
+          const destinationList = {
+            ...clone[destinationListIndex],
+            items: [...clone[destinationListIndex].items],
+          };
+
+          const activeItemIndex = activeList.items.findIndex(
+            (item) => item.id === activeItemId,
+          );
+
+          if (activeItemIndex === -1) {
+            console.error("can not find the item.");
+            return old;
+          }
+
+          const [activeItem] = activeList.items.splice(activeItemIndex, 1);
+
+          destinationList.items.push(activeItem);
+
+          clone[activeListIndex] = activeList;
+          clone[destinationListIndex] = destinationList;
+
+          return clone;
+        } finally {
+          setActiveItemId(null);
+          setActiveListId(null);
         }
+      });
+    },
+    [activeItemId, activeListId],
+  );
 
-        const clone = [...old];
-        const activeList = {
-          ...clone[activeListIndex],
-          items: [...clone[activeListIndex].items],
-        };
-        const destinationList = {
-          ...clone[destinationListIndex],
-          items: [...clone[destinationListIndex].items],
-        };
-
-        const activeItemIndex = activeList.items.findIndex(
-          (item) => item.id === activeItemId,
-        );
-
-        if (activeItemIndex === -1) {
-          console.error("can not find the item.");
-          return old;
-        }
-
-        const [activeItem] = activeList.items.splice(activeItemIndex, 1);
-
-        destinationList.items.push(activeItem);
-
-        clone[activeListIndex] = activeList;
-        clone[destinationListIndex] = destinationList;
-
-        return clone;
-      } finally {
-        setActiveItemId(null);
-        setActiveListId(null);
-      }
-    });
-  };
   return (
     <div className={styles.board}>
       <div className={styles.toolbar}>
