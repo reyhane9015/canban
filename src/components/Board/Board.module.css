@@ -26,6 +26,11 @@
     .actions {
       display: flex;
       align-items: center;
+      .spacer {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
     }
   }
 
