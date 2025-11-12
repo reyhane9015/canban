@@ -13,7 +13,7 @@ import List from "../List/List";
 import styles from "./Board.module.css";
 
 export default function Board(): ReactNode {
-  const { lists, create, move, remove } = useContext(BoardContext);
+  const { lists, create, move } = useContext(BoardContext);
 
   const [activeListId, setActiveListId] = useState<string | null>(null);
 
@@ -84,11 +84,11 @@ export default function Board(): ReactNode {
     setActiveItemId(null);
     setActiveListId(null);
   };
-  const handleListItemRemove = (listId: string, itemId: string): void => {
-    remove(listId, itemId);
-    setActiveItemId(null);
-    setActiveListId(null);
-  };
+  // const handleListItemRemove = (listId: string, itemId: string): void => {
+  //   remove(listId, itemId);
+  //   setActiveItemId(null);
+  //   setActiveListId(null);
+  // };
 
   return (
     <div className={styles.board}>
@@ -121,11 +121,7 @@ export default function Board(): ReactNode {
       <ul className={styles.lists}>
         {lists.map((list) => (
           <li key={list.id}>
-            <List
-              list={list}
-              onClick={handleListItemClick}
-              onRemove={handleListItemRemove}
-            />
+            <List list={list} onClick={handleListItemClick} />
           </li>
         ))}
       </ul>
