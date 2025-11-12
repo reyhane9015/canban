@@ -105,7 +105,7 @@ export default function Board(): ReactNode {
         activeList.items.splice(activeItemIndex, 1);
 
         clone[activeListIndex] = activeList;
-
+        save(clone);
         return clone;
       } finally {
         setActiveItemId(null);
