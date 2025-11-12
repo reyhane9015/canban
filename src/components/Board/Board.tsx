@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 
 import { listsData } from "@/data/list-data";
 
@@ -33,6 +33,26 @@ export default function Board(): ReactNode {
   const [activeListId, setActiveListId] = useState<string | null>(null);
 
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
+
+  useEffect(() => {
+    save(lists);
+  }, [lists]);
+
+  useEffect(() => {
+    const handleDocumentKeyDown = (e: KeyboardEvent): void => {
+      if (e.code !== "Escape") {
+        return;
+      }
+
+      setActiveListId(null);
+      setActiveItemId(null);
+    };
+    document.addEventListener("keydown", handleDocumentKeyDown);
+
+    return (): void => {
+      document.removeEventListener("keydown", handleDocumentKeyDown);
+    };
+  }, []);
 
   // const handleListItemClick = useCallback((id: string): void => {
   //   setLists((old) => {
@@ -105,7 +125,7 @@ export default function Board(): ReactNode {
         activeList.items.splice(activeItemIndex, 1);
 
         clone[activeListIndex] = activeList;
-        save(clone);
+
         return clone;
       } finally {
         setActiveItemId(null);
@@ -157,7 +177,6 @@ export default function Board(): ReactNode {
           clone[activeListIndex] = activeList;
           clone[destinationListIndex] = destinationList;
 
-          save(clone);
           return clone;
         } finally {
           setActiveItemId(null);
@@ -174,7 +193,7 @@ export default function Board(): ReactNode {
 
       const id = globalThis.crypto.randomUUID();
       clone[0] = { ...clone[0], items: [...clone[0].items, { id, title: id }] };
-      save(clone);
+
       return clone;
     });
   };
