@@ -14,8 +14,21 @@ import List from "../List/List";
 
 import styles from "./Board.module.css";
 
+function save(lists: ListType[]): void {
+  localStorage.setItem("lists", JSON.stringify(lists));
+}
+
+function load(): ListType[] {
+  const item = localStorage.getItem("lists");
+  if (!item) {
+    return listsData;
+  }
+
+  return JSON.parse(item);
+}
+
 export default function Board(): ReactNode {
-  const [lists, setLists] = useState<ListType[]>(listsData);
+  const [lists, setLists] = useState<ListType[]>(load);
 
   const [activeListId, setActiveListId] = useState<string | null>(null);
 
@@ -144,6 +157,7 @@ export default function Board(): ReactNode {
           clone[activeListIndex] = activeList;
           clone[destinationListIndex] = destinationList;
 
+          save(clone);
           return clone;
         } finally {
           setActiveItemId(null);
@@ -154,6 +168,16 @@ export default function Board(): ReactNode {
     [activeItemId, activeListId],
   );
 
+  const handleCreateButtonClick = (): void => {
+    setLists((old) => {
+      const clone = [...old];
+
+      const id = globalThis.crypto.randomUUID();
+      clone[0] = { ...clone[0], items: [...clone[0].items, { id, title: id }] };
+      save(clone);
+      return clone;
+    });
+  };
   return (
     <div className={styles.board}>
       <div className={styles.toolbar}>
@@ -177,7 +201,7 @@ export default function Board(): ReactNode {
           <IconButton>
             <MingcuteEdit2Line />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleCreateButtonClick}>
             <MingcuteAddLine />
           </IconButton>
         </div>
