@@ -8,7 +8,6 @@ import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";
 
 import type { ListType } from "@/types/list";
-import type { ListItemType } from "@/types/list-item";
 
 import Button from "../Button/Button";
 import List from "../List/List";
@@ -76,7 +75,10 @@ export default function Board(): ReactNode {
         }
 
         const clone = [...old];
-        const activeList = { ...clone[activeListIndex] };
+        const activeList = {
+          ...clone[activeListIndex],
+          items: [...clone[activeListIndex].items],
+        };
 
         const activeItemIndex = activeList.items.findIndex(
           (item) => item.id === activeItemId,
@@ -98,6 +100,56 @@ export default function Board(): ReactNode {
       }
     });
   };
+
+  const handleMoveButtonClick = (destinationListId: string): void => {
+    setLists((old) => {
+      try {
+        const activeListIndex = old.findIndex(
+          (list) => list.id === activeListId,
+        );
+
+        const destinationListIndex = old.findIndex(
+          (list) => list.id === destinationListId,
+        );
+
+        if (activeListIndex === -1 || destinationListIndex === -1) {
+          console.error("can not find the list.");
+          return old;
+        }
+
+        const clone = [...old];
+        const activeList = {
+          ...clone[activeListIndex],
+          items: [...clone[activeListIndex].items],
+        };
+        const destinationList = {
+          ...clone[destinationListIndex],
+          items: [...clone[destinationListIndex].items],
+        };
+
+        const activeItemIndex = activeList.items.findIndex(
+          (item) => item.id === activeItemId,
+        );
+
+        if (activeItemIndex === -1) {
+          console.error("can not find the item.");
+          return old;
+        }
+
+        const [activeItem] = activeList.items.splice(activeItemIndex, 1);
+
+        destinationList.items.push(activeItem);
+
+        clone[activeListIndex] = activeList;
+        clone[destinationListIndex] = destinationList;
+
+        return clone;
+      } finally {
+        setActiveItemId(null);
+        setActiveListId(null);
+      }
+    });
+  };
   return (
     <div className={styles.board}>
       <div className={styles.toolbar}>
@@ -108,7 +160,12 @@ export default function Board(): ReactNode {
               {lists
                 .filter((list) => list.id !== activeListId)
                 .map((list) => (
-                  <Button key={list.id}>{list.title}</Button>
+                  <Button
+                    key={list.id}
+                    onClick={() => handleMoveButtonClick(list.id)}
+                  >
+                    {list.title}
+                  </Button>
                 ))}
               <Button onClick={handleRemoveButtonClick}>Remove</Button>
             </div>
