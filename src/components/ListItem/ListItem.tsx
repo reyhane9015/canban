@@ -1,5 +1,7 @@
 import { type MouseEvent, type ReactNode, memo, use, useContext } from "react";
 
+import { toast } from "react-toastify";
+
 import clsx from "clsx";
 
 import { ActiveItemContext } from "@/context/active-item-context";
@@ -34,6 +36,7 @@ const ListItem = memo(function ListItem({ listId, item }: Props): ReactNode {
   const handleRemoveButtonClick = (e: MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation();
     remove(listId, item.id);
+    toast.success("item removed successfully");
     deactivate();
   };
 

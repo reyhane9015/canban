@@ -1,5 +1,7 @@
 import { type ReactNode, use, useContext } from "react";
 
+import { toast } from "react-toastify";
+
 import IconButton from "@/components/IconButton/IconButton.tsx";
 
 import { ActiveItemContext } from "@/context/active-item-context";
@@ -53,11 +55,13 @@ export default function Board(): ReactNode {
 
   const handleCreateButtonClick = (): void => {
     create();
+    toast.success("item created successfully");
   };
 
   const handleMoveButtonClick = (toListId: string): void => {
     if (activeListId && activeItemId) {
       move(activeListId, activeItemId, toListId);
+      toast.success("item moved successfully");
     }
     deactivate();
   };
