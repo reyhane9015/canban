@@ -5,11 +5,10 @@ import { BrowserRouter } from "react-router";
 
 import { ErrorBoundary } from "react-error-boundary";
 
-import { Slide, ToastContainer } from "react-toastify";
-
 import ErrorPage from "@/pages/ErrorPage/ErrorPage.tsx";
 
 import App from "./App.tsx";
+import Toaster from "./components/Toaster/Toaster.tsx";
 
 import "./index.css";
 import "./styles/colors.css";
@@ -22,19 +21,7 @@ createRoot(document.getElementById("root")!).render(
     <ErrorBoundary FallbackComponent={ErrorPage}>
       <BrowserRouter>
         <App />
-        <ToastContainer
-          position="bottom-right"
-          autoClose={2000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition={Slide}
-        />
+        <Toaster />
       </BrowserRouter>
     </ErrorBoundary>
   </StrictMode>,
