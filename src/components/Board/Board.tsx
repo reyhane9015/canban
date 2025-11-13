@@ -16,7 +16,7 @@ import List from "../List/List";
 import styles from "./Board.module.css";
 
 export default function Board(): ReactNode {
-  const { lists, create, move } = useContext(BoardContext);
+  const { lists, move } = useContext(BoardContext);
 
   const { activeListId, activeItemId, deactivate } = use(ActiveItemContext);
 
@@ -53,10 +53,14 @@ export default function Board(): ReactNode {
   //   });
   // }, []);
 
-  const handleCreateButtonClick = (): void => {
-    create();
-    toast.success("item created successfully");
-  };
+  // ##################################### //
+
+  // const handleCreateButtonClick = (): void => {
+  //   create();
+  //   toast.success("item created successfully");
+  // };
+
+  // ##################################### //
 
   const handleMoveButtonClick = (toListId: string): void => {
     if (activeListId && activeItemId) {
@@ -94,7 +98,7 @@ export default function Board(): ReactNode {
           <IconButton>
             <MingcuteEdit2Line />
           </IconButton>
-          <IconButton onClick={handleCreateButtonClick}>
+          <IconButton>
             <MingcuteAddLine />
           </IconButton>
         </div>
