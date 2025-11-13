@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import clsx from "clsx";
 
 import { ActiveItemContext } from "@/context/active-item-context";
-import { BoardContext } from "@/context/board-countext";
+import { BoardContext } from "@/context/board-context";
 
 import MingcuteDelete2Line from "@/icons/MingcuteDelete2Line";
 

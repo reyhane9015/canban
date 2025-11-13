@@ -1,10 +1,11 @@
 import { createContext } from "react";
 
 import type { ListType } from "@/types/list";
+import type { ListItemType } from "@/types/list-item";
 
 type ContextValue = {
   lists: ListType[];
-  create: () => void;
+  create: (listId: string, item: ListItemType) => void;
   move: (fromListId: string, itemId: string, toListId: string) => void;
   remove: (listId: string, itemId: string) => void;
 };

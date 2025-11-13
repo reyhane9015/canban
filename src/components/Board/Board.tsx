@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import IconButton from "@/components/IconButton/IconButton.tsx";
 
 import { ActiveItemContext } from "@/context/active-item-context";
-import { BoardContext } from "@/context/board-countext";
+import { BoardContext } from "@/context/board-context";
 
 import MingcuteAddLine from "@/icons/MingcuteAddLine.tsx";
 import MingcuteEdit2Line from "@/icons/MingcuteEdit2Line.tsx";

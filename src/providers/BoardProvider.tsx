@@ -3,16 +3,16 @@ import {
   type ReactNode,
   useEffect,
   useReducer,
-  useState,
 } from "react";
 
 import { listsData } from "@/data/list-data";
 
-import { BoardContext } from "@/context/board-countext";
+import { BoardContext } from "@/context/board-context";
 
-import { listsReducer } from "@/reducers/lists-resucer";
+import { listsReducer } from "@/reducers/lists-reducer";
 
 import type { ListType } from "@/types/list";
+import type { ListItemType } from "@/types/list-item";
 
 function save(lists: ListType[]): void {
   localStorage.setItem("lists", JSON.stringify(lists));
@@ -38,8 +38,8 @@ export default function BoardProvider({ children }: Props): ReactNode {
     save(lists);
   }, [lists]);
 
-  const create = (): void => {
-    dispatch({ type: "created" });
+  const create = (listId: string, item: ListItemType): void => {
+    dispatch({ type: "created", listId, item });
   };
 
   const move = (fromListId: string, itemId: string, toListId: string): void => {
