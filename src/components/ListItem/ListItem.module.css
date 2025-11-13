@@ -3,6 +3,7 @@
   box-shadow: var(--shadow-2);
   padding: 0.5rem;
   border-radius: var(--border-radius-2);
+  border: 1px solid transparent;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: start;
@@ -14,6 +15,10 @@
   &:hover {
     button {
       opacity: 1;
+      cursor: pointer;
     }
+  }
+  &.active {
+    border-color: var(--color-primary);
   }
 }
