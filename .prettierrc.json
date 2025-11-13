@@ -12,6 +12,7 @@
     "^@/api",
     "^@/components",
     "^@/context",
+    "^@/reducers",
     "^@/dto",
     "^@/hooks",
     "^@/icons",

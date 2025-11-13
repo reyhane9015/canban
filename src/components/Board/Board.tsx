@@ -107,7 +107,7 @@ export default function Board(): ReactNode {
                     {list.title}
                   </Button>
                 ))}
-              {/* <Button onClick={handleListItemRemove}>Remove</Button> */}
+              {/* <Button onClick={handleListIt emRemove}>Remove</Button> */}
             </div>
           )}
           <IconButton>
